@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title data-id="th-modified">مغامرة الأرنب مع الحروف العربية</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap');
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #e0f7fa;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+            user-select: none; /* لمنع تحديد النصوص بالخطأ */
+            -webkit-tap-highlight-color: transparent; /* إخفاء مربع التحديد الأزرق عند الضغط */
+        }
+
+        #game-container {
+            background-color: #ffffff;
+            width: 95%;
+            max-width: 500px;
+            height: 95%;
+            max-height: 850px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 6px solid #ffb74d;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #ff9800;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 0px #fff, 2px 2px 0px #ffe0b2;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #00838f;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .huge-emoji {
+            font-size: 5rem;
+            margin: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        .display-item {
+            font-size: 5rem;
+            margin: 10px;
+            color: #e91e63;
+        }
+
+        .btn-large {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-size: 1.6rem;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #388e3c;
+            transition: transform 0.1s, box-shadow 0.1s;
+            margin-top: 15px;
+            width: 80%;
+        }
+
+        .btn-large:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+
+        .options-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .option-card {
+            background-color: #bbdefb;
+            border: 4px solid #64b5f6;
+            border-radius: 15px;
+            width: 28vw;
+            max-width: 100px;
+            height: 28vw;
+            max-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: #1976d2;
+        }
+
+        .option-card:active {
+            transform: scale(0.95);
+            background-color: #90caf9;
+        }
+
+        #feedback-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 10;
+            border-radius: 20px;
+        }
+
+        .feedback-text {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin: 15px;
+            text-align: center;
+        }
+
+        .star {
+            font-size: 5rem;
+            color: #ffc107;
+            animation: spin 1s linear infinite;
+        }
+
+        .score-board {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            background: #fff3e0;
+            padding: 5px 12px;
+            border-radius: 10px;
+            border: 2px solid #ffb74d;
+            font-weight: bold;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+<meta property="og:title" content="مغامرة الأرنب مع الحروف العربية" data-id="th-modified" ><meta property="og:image" content="https://tiiny.host/assets/logo-purple-bg.png" data-id="th-modified" ><meta property="og:image:width" content="1501" data-id="th-modified" ><meta property="og:image:height" content="1501" data-id="th-modified" ><meta property="og:image:type" content="image/png" data-id="th-modified" ><meta property="og:url" content="https://turquoise-roanne-74.tiiny.site/" data-id="th-modified" ><meta property="og:type" content="website" data-id="th-modified" ><script defer data-domain="turquoise-roanne-74.tiiny.site" src="https://analytics.tiiny.net/js/plausible.js"></script><script type="text/javascript" src="https://tiiny.host/ad-script.js"></script></head>
+<body>
+
+    <div id="game-container">
+        <!-- شاشة البداية -->
+        <div id="start-screen" class="screen active">
+            <h1>مغامرة الأرنب</h1>
+            <div class="huge-emoji">🐰</div>
+            <h2>مع الحروف العربية</h2>
+            <button class="btn-large" onclick="startGame()">يلا نلعب!</button>
+        </div>
+
+        <!-- شاشة اللعب -->
+        <div id="game-screen" class="screen">
+            <div class="score-board">النجوم: <span id="score">0</span> ⭐</div>
+            <h2 id="question-title">أين الحرف؟</h2>
+            <div id="display-area"></div>
+            <div id="options-area" class="options-container"></div>
+        </div>
+
+        <!-- شاشة النهاية -->
+        <div id="end-screen" class="screen">
+            <h1>انتهت اللعبة!</h1>
+            <div class="huge-emoji">🏆</div>
+            <h2 id="final-score-text" style="font-size: 1.8rem;">أنت بطل رائع!</h2>
+            <button class="btn-large" onclick="location.reload()">العب مرة أخرى</button>
+        </div>
+
+        <!-- شاشة التشجيع (الإجابة) -->
+        <div id="feedback-overlay">
+            <div id="feedback-emoji" class="star">⭐</div>
+            <div id="feedback-message" class="feedback-text">برافو يا بطل!</div>
+        </div>
+    </div>
+
+    <script>
+        const lettersData = [
+            { letter: 'أ', words: [{w: 'أسد', e: '🦁'}, {w: 'أرنب', e: '🐰'}] },
+            { letter: 'ب', words: [{w: 'بطة', e: '🦆'}, {w: 'باب', e: '🚪'}] },
+            { letter: 'ت', words: [{w: 'تفاحة', e: '🍎'}, {w: 'تمساح', e: '🐊'}] },
+            { letter: 'ث', words: [{w: 'ثعلب', e: '🦊'}, {w: 'ثوب', e: '👕'}] },
+            { letter: 'ج', words: [{w: 'جمل', e: '🐪'}, {w: 'جزر', e: '🥕'}] }
+        ];
+
+        let score = 0;
+        let currentQuestion = 0;
+        const totalQuestions = 10;
+        let correctAnswer = '';
+
+        function startGame() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            score = 0;
+            currentQuestion = 0;
+            updateScore();
+            nextQuestion();
+        }
+
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function generateOptions(correct) {
+            let options = [correct];
+            let pool = lettersData.filter(d => d.letter !== correct.letter);
+            pool = shuffle(pool);
+            options.push(pool[0]);
+            options.push(pool[1]);
+            return shuffle(options);
+        }
+
+        function nextQuestion() {
+            if (currentQuestion >= totalQuestions) {
+                endGame();
+                return;
+            }
+
+            const activities = [1, 2];
+            const activityType = getRandomItem(activities);
+            const targetData = getRandomItem(lettersData);
+            const targetWord = getRandomItem(targetData.words);
+            
+            const titleEl = document.getElementById('question-title');
+            const displayEl = document.getElementById('display-area');
+            const optionsEl = document.getElementById('options-area');
+            
+            displayEl.innerHTML = '';
+            optionsEl.innerHTML = '';
+
+            const optionsData = generateOptions(targetData);
+
+            if (activityType === 1) {
+                titleEl.innerText = `ما هو الحرف الأول لـ ${targetWord.w}؟`;
+                displayEl.innerHTML = `<div class="display-item">${targetWord.e}</div>`;
+                correctAnswer = targetData.letter;
+
+                optionsData.forEach(opt => {
+                    const btn = document.createElement('div');
+                    btn.className = 'option-card';
+                    btn.innerText = opt.letter;
+                    btn.onclick = () => checkAnswer(opt.letter === correctAnswer);
+                    optionsEl.appendChild(btn);
+                });
+
+            } else if (activityType === 2) {
+                titleEl.innerText = `أي صورة تبدأ بحرف (${targetData.letter})؟`;
+                displayEl.innerHTML = `<div class="display-item">${targetData.letter}</div>`;
+                correctAnswer = targetWord.e;
+
+                optionsData.forEach(opt => {
+                    const wordObj = getRandomItem(opt.words);
+                    const btn = document.createElement('div');
+                    btn.className = 'option-card';
+                    btn.innerText = wordObj.e;
+                    btn.onclick = () => checkAnswer(wordObj.e === correctAnswer || opt.letter === targetData.letter);
+                    optionsEl.appendChild(btn);
+                });
+            }
+        }
+
+        function checkAnswer(isCorrect) {
+            const overlay = document.getElementById('feedback-overlay');
+            const msg = document.getElementById('feedback-message');
+            const emoji = document.getElementById('feedback-emoji');
+
+            overlay.style.display = 'flex';
+
+            if (isCorrect) {
+                score++;
+                updateScore();
+                emoji.innerText = '⭐';
+                emoji.style.animation = 'spin 1s linear infinite';
+                const successMsgs = ['برافو!', 'شاطر جداً!', 'ممتاز!', 'رائع!'];
+                msg.innerText = getRandomItem(successMsgs);
+                msg.style.color = '#4caf50';
+            } else {
+                emoji.innerText = '❌';
+                emoji.style.animation = 'none';
+                msg.innerText = 'حاول مرة أخرى!';
+                msg.style.color = '#f44336';
+            }
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                if (isCorrect) {
+                    currentQuestion++;
+                    nextQuestion();
+                }
+            }, 1200); 
+        }
+
+        function updateScore() {
+            document.getElementById('score').innerText = score;
+        }
+
+        function endGame() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('end-screen').classList.add('active');
+            document.getElementById('final-score-text').innerText = `جمعت ${score} نجوم من ${totalQuestions}!`;
+        }
+    </script>
+</body>
+</html>
